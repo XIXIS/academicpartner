@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/splashBackgroundColor"
+    android:gravity="center"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.FinalSignUp"
+    tools:showIn="@layout/activity_final_sign_up">
+
+    <ImageView
+        android:id="@+id/hat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:src="@drawable/white_hat" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/appName"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:layout_below="@id/hat"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"/>
+
+
+    <TextView
+        android:id="@+id/collegeTextView"
+        android:layout_below="@id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/college"
+        android:textColor="@color/white"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_gravity="center" />
+
+    <Spinner
+        android:id="@+id/college"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/collegeTextView"
+        android:layout_toEndOf="@id/collegeTextView"
+        android:layout_alignBottom="@id/collegeTextView"
+        android:background="@color/white"
+        android:layout_below="@id/appName"
+        android:prompt="@string/select_college"
+        android:textSize="23sp"
+        android:spinnerMode="dialog" />
+
+    <TextView
+        android:id="@+id/schoolTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/school"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:layout_below="@id/collegeTextView"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"/>
+
+    <Spinner
+        android:id="@+id/school"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_school"
+        android:spinnerMode="dialog"
+        android:layout_toEndOf="@+id/collegeTextView"
+        android:layout_above="@+id/deptTextView"
+        android:background="@color/white"
+        android:layout_alignBottom="@+id/schoolTextView"
+        android:layout_toRightOf="@+id/collegeTextView"
+        android:layout_alignTop="@+id/schoolTextView" />
+
+    <TextView
+        android:id="@+id/deptTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dept"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:layout_below="@id/schoolTextView"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/dept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/deptTextView"
+        android:layout_toEndOf="@+id/deptTextView"
+        android:layout_alignTop="@+id/deptTextView"
+        android:background="@color/white"
+        android:textSize="20sp"
+        android:layout_above="@+id/coursesTextView"
+        android:hint="@string/select_dept" />
+
+    <TextView
+        android:id="@+id/coursesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/courses"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:layout_below="@id/deptTextView"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/courses"
+        android:layout_alignStart="@id/school"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="20sp"
+        android:layout_toRightOf="@id/schoolTextView"
+        android:layout_toEndOf="@+id/schoolTextView"
+        android:background="@color/white"
+        android:layout_above="@+id/finish"
+        android:layout_alignTop="@+id/coursesTextView"
+        android:layout_alignLeft="@+id/school"
+        android:hint="@string/select_course" />
+
+    <TextView
+        android:id="@+id/finish"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/finish"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:layout_below="@id/coursesTextView"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"/>
+
+</RelativeLayout>

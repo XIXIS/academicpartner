@@ -1,0 +1,83 @@
+<resources>
+
+    <string-array name="tabs">
+        <item>Class Timetable</item>
+        <item>Exam Timetable</item>
+    </string-array>
+
+    <string-array name="colleges">
+        <item>Select a College</item>
+        <item>Health Sciences</item>
+        <item>Basic and Applied Sciences</item>
+        <item>Education</item>
+        <item>Humanities</item>
+    </string-array>
+
+    <string-array name="levels">
+        <item>Select a Level</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>600</item>
+    </string-array>
+
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
+    <string name="app_name">The Academic Partner</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+    <string name="id_number">ID Number:</string>
+    <string name="pin">Pin:</string>
+    <string name="hint_id_number">ID Number</string>
+    <string name="hint_pin">Pin</string>
+    <string name="motto">Fast.Smart.Innovative</string>
+    <string name="appName">The Academic Partner</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="username">Username:</string>
+    <string name="hint_username">Username</string>
+    <string name="alreadySignedUp">Already Signed Up?</string>
+    <string name="signin">Sign In</string>
+    <string name="title_activity_final_sign_up">FinalSignUp</string>
+    <string name="next">Next</string>
+    <string name="college">College</string>
+    <string name="select_college">Select a College</string>
+    <string name="school">School</string>
+    <string name="select_school">Select a School</string>
+    <string name="dept">Department</string>
+    <string name="select_dept">Select your Departments</string>
+    <string name="level">Level:</string>
+    <string name="select_level">Select a Level</string>
+    <string name="select_course">Select Your Courses</string>
+    <string name="courses">Courses</string>
+    <string name="signup">Sign Up</string>
+    <string name="finish">Finish</string>
+    <string name="congrat">Congratulations!!!</string>
+    <string name="settingUp">Setting Up &#8230; Just A Moment!!</string>
+    <string name="title_activity_sign_up_success">SignUpSuccess</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="view_by_day">View Timetable By Day</string>
+    <string name="view_by_course">View Timetable By Course</string>
+    <string name="view_all_timetable">View Overall Timetable</string>
+    <string name="timetable_checker">Timetable Checker</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_trial">TrialActivity</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_timetable_by_day">Timetable By Day</string>
+
+</resources>
