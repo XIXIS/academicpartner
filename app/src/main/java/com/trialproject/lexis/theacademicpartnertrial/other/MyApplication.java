@@ -1,4 +1,4 @@
-package com.trialproject.lexis.theacademicpartnertrial;
+package com.trialproject.lexis.theacademicpartnertrial.other;
 
 import android.app.Application;
 import android.content.Context;

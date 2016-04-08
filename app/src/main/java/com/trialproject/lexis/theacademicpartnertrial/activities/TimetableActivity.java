@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.trialproject.lexis.theacademicpartnertrial.NavigationDrawerFragment;
+import com.trialproject.lexis.theacademicpartnertrial.other.NavigationDrawerFragment;
 import com.trialproject.lexis.theacademicpartnertrial.R;
 import com.trialproject.lexis.theacademicpartnertrial.fragments.Tab1Fragment;
 import com.trialproject.lexis.theacademicpartnertrial.fragments.Tab2Fragment;
@@ -118,7 +118,7 @@ public class TimetableActivity extends AppCompatActivity {
                     break;
                 case 1:
                     fragment=new Tab2Fragment().newInstance("","");
-
+                    break;
 
             }
             return fragment;

@@ -1,4 +1,4 @@
-package com.trialproject.lexis.theacademicpartnertrial.activities;
+package com.trialproject.lexis.theacademicpartnertrial.projectactivities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.trialproject.lexis.theacademicpartnertrial.R;
+import com.trialproject.lexis.theacademicpartnertrial.projectactivities.FinalSignUp;
+import com.trialproject.lexis.theacademicpartnertrial.projectactivities.HomeActivity;
 
 public class Splash extends AppCompatActivity {
 
@@ -31,21 +33,21 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.content_splash);
 
         firstInstallation=Boolean.valueOf(readFromPreferences(getApplicationContext(), KEY_USER_DO_FIRST_INSTALL, "false"));
         if(savedInstanceState != null){
             fromSavedInstanceState = true;
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         TextView appName = (TextView) findViewById(R.id.appName);
         TextView appMotto = (TextView) findViewById(R.id.appMotto);
@@ -76,7 +78,7 @@ public class Splash extends AppCompatActivity {
                     if (!firstInstallation && !fromSavedInstanceState){
                         firstInstallation=true;
                         saveToPreferences(getApplicationContext(), KEY_USER_DO_FIRST_INSTALL, firstInstallation+"");
-                        startActivity( new Intent(getApplicationContext(),SignUp.class));
+                        startActivity( new Intent(getApplicationContext(),FinalSignUp.class));
                         finish();
                     }else {
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);

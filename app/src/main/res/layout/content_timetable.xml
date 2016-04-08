@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/navigation_drawer_fragment"
-        android:name="com.trialproject.lexis.theacademicpartnertrial.NavigationDrawerFragment"
+        android:name="com.trialproject.lexis.theacademicpartnertrial.other.NavigationDrawerFragment"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

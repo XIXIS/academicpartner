@@ -1,4 +1,4 @@
-package com.trialproject.lexis.theacademicpartnertrial.activities;
+package com.trialproject.lexis.theacademicpartnertrial.projectactivities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -7,18 +7,28 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.trialproject.lexis.theacademicpartnertrial.R;
+import com.trialproject.lexis.theacademicpartnertrial.activities.ActivityUsingTabLibrary;
+import com.trialproject.lexis.theacademicpartnertrial.activities.TimetableByDay;
+import com.trialproject.lexis.theacademicpartnertrial.helperclasses.HomeCustomListAdapter;
 
 import java.lang.reflect.Type;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView dayTxt, courseTxt, allTxt, checker;
+    private TextView checker;
+    private LinearLayout timetableByDay, timetableByCourse,
+            allTimetable, findVenue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,33 +44,45 @@ public class HomeActivity extends AppCompatActivity {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 //            }
-//        });
+//        });\
 
-        dayTxt=(TextView) findViewById(R.id.viewByDayText);
-        courseTxt=(TextView) findViewById(R.id.viewByCourseText);
-        allTxt=(TextView) findViewById(R.id.viewAllText);
         checker=(TextView) findViewById(R.id.besideTimetableImage);
+        timetableByDay=(LinearLayout) findViewById(R.id.timetableByDay);
+        timetableByCourse=(LinearLayout) findViewById(R.id.timetableByCourse);
+        allTimetable=(LinearLayout) findViewById(R.id.AllTmetable);
+        findVenue=(LinearLayout) findViewById(R.id.findVenue);
 
-        Typeface face=Typeface.createFromAsset(getAssets(),
-                "Quicksand_Light.ttf");
-        dayTxt.setTypeface(face, Typeface.BOLD);
-        courseTxt.setTypeface(face, Typeface.BOLD);
-        allTxt.setTypeface(face, Typeface.BOLD);
-        checker.setTypeface(face, Typeface.BOLD);
-
-        allTxt.setOnClickListener(new View.OnClickListener() {
+        timetableByDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, TimetableActivity.class));
+                startActivity(new Intent(HomeActivity.this, TimetableByDay.class));
             }
         });
 
-        dayTxt.setOnClickListener(new View.OnClickListener() {
+        timetableByCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), TimetableByDay.class));
+
             }
         });
+
+
+        allTimetable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        findVenue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+
     }
 
     @Override

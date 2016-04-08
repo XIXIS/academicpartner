@@ -1,4 +1,4 @@
-package com.trialproject.lexis.theacademicpartnertrial.activities;
+package com.trialproject.lexis.theacademicpartnertrial.projectactivities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -44,11 +44,12 @@ import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.ID_COLLEGE_HUMANITIES;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_BASE_URL;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_REGISTER_FINAL_URL;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_REGISTER_URL;
 
 public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    TextView appName, colTV, schTV, deptTV, courseTV, finish;
-    Spinner col, sch;
+    TextView appName, colTV, schTV, deptTV, courseTV, finish, lvl;
+    Spinner col, sch, level;
     Button dept, course;
     boolean[] mSelection = null;
     private static String[] COLLEGES, SCHOOLS, DEPTS, COURSES;
@@ -62,26 +63,30 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
     private Map<String, String> depts =  new HashMap<>();
     private Map<String, String> courses =  new HashMap<>();
     private String selectedCollegeID, selectedSchoolID, selectedDeptIDs;
+    private static String[] LEVELS;
+    private ArrayList<String> levels = new ArrayList<>();
     private Student student;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_final_sign_up);
+        setContentView(R.layout.content_final_sign_up);
 
         appName = (TextView) findViewById(R.id.appName);
         colTV = (TextView) findViewById(R.id.collegeTextView);
         schTV = (TextView) findViewById(R.id.schoolTextView);
         deptTV = (TextView) findViewById(R.id.deptTextView);
         courseTV = (TextView) findViewById(R.id.coursesTextView);
+        lvl=(TextView) findViewById(R.id.levelTextView);
         finish = (TextView) findViewById(R.id.finish);
+        level=(Spinner) findViewById(R.id.level);
         col = (Spinner) findViewById(R.id.college);
         sch = (Spinner) findViewById(R.id.school);
         dept = (Button) findViewById(R.id.dept);
         course = (Button) findViewById(R.id.courses);
-        student= (Student)getIntent().getSerializableExtra("student");
 
         face = Typeface.createFromAsset(getAssets(), "Quicksand_Light.ttf");
+        lvl.setTypeface(face);
         appName.setTypeface(face);
         colTV.setTypeface(face);
         schTV.setTypeface(face);
@@ -93,6 +98,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
         requestQueue = volleySingleton.getRequestQueue();
 
         getCollegeData();
+        getLevelsData();
         col.setOnItemSelectedListener(this);
         sch.setOnItemSelectedListener(this);
 
@@ -109,6 +115,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
                 builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dept.setText("");
                         dept.setText(selectedDepts.toString());
                         selectedDeptIDs="";
                         for (int i=0;i<selectedDepts.size();i++){
@@ -119,7 +126,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
                             selectedDeptIDs+=(depts.get(selectedDepts.get(i))+",");
                             Toast.makeText(getApplicationContext(), selectedDeptIDs, Toast.LENGTH_SHORT).show();
                         }
-                        Log.d("selected depts & codes", student.getLevel() + "\n" + selectedDepts.toString() + "\n" + selectedDeptIDs);
+                        Log.d("selected depts & codes", selectedDepts.toString() + "\n" + selectedDeptIDs);
                         getCoursesData();
                     }
                 });
@@ -163,10 +170,10 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUpSuccess.class);
-                student.setDeptartments(selectedDepts.toArray(new String[selectedDepts.size()]));
-                student.setCourses(selectedCourses.toArray(new String[selectedCourses.size()]));
-                intent.putExtra("student", student);
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                student.setDeptartments(selectedDepts.toArray(new String[selectedDepts.size()]));
+//                student.setCourses(selectedCourses.toArray(new String[selectedCourses.size()]));
+//                intent.putExtra("student", student);
                 startActivity(intent);
                 finish();
             }
@@ -253,6 +260,60 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    //retrive levels
+    private void getLevelsData() {
+        sendLevelsJsonRequest();
+    }
+
+    private void sendLevelsJsonRequest() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("levelCheck", "true");
+
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_URL), params,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        parseLevelJSONResponse(response);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(final VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Please check your internet connection\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        requestQueue.add(jsObjRequest);
+    }
+
+    private void parseLevelJSONResponse(JSONArray response) {
+        if (response == null || response.length() == 0) {
+            return;
+        }
+        try {
+            Log.d("Json String", response.toString());
+            String lev;
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject obj = response.getJSONObject(i);
+                lev=obj.getString("level_number");
+                levels.add(lev);
+            }
+            Log.d("Levels String", levels.toString());
+
+            LEVELS = levels.toArray(new String[levels.size()]);
+            Log.d("Levels", LEVELS.toString());
+
+            // Setting a Custom Adapter to the Spinner
+            level.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, LEVELS));
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
 
     //Retrieve Colleges
     private void getCollegeData() {
@@ -432,7 +493,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
         params.put("deptCheck", "false");
         params.put("courseCheck", "true");
         params.put("deptIDs", selectedDeptIDs);
-        params.put("level", "" + student.getLevel());
+        params.put("level", level.getSelectedItem().toString());
 
 
 

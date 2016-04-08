@@ -2,7 +2,7 @@ package com.trialproject.lexis.theacademicpartnertrial.api;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.trialproject.lexis.theacademicpartnertrial.MyApplication;
+import com.trialproject.lexis.theacademicpartnertrial.other.MyApplication;
 
 /**
  * Created by Lexis on 14/01/2016.

@@ -1,8 +1,8 @@
 <resources>
 
     <string-array name="tabs">
-        <item>Class Timetable</item>
-        <item>Exam Timetable</item>
+        <item>Lecture Timetable</item>
+        <item>Examination Timetable</item>
     </string-array>
 
     <string-array name="colleges">
@@ -22,6 +22,33 @@
         <item>600</item>
     </string-array>
 
+    <string-array name="days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+    </string-array>
+
+    <string-array name="list_options">
+        <item>View Timetable By Day</item>
+        <item>View Timetable By Courses</item>
+        <item>View Overall Timetable</item>
+        <item>Find a Venue</item>
+    </string-array>
+
+    <string-array name="list_subItem_options">
+        <item>Select a day to view timetable entries for that day</item>
+        <item>Select a course to view timetable schedule for the week</item>
+        <item>Displays an overall timetable for the week</item>
+        <item>Select a venue to find its location</item>
+    </string-array>
+
+    <string name="find_venue">Find a Venue</string>
+    <string name="select_a_day">Select a day to view timetable entries for that day</string>
+    <string name="select_a_course">Select a course to view timetable schedule for the week</string>
+    <string name="overall_timetable">Displays an overall timetable for the week</string>
+    <string name="select_a_venue">Select a venue to find its location</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
@@ -29,7 +56,6 @@
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
-
     <string name="app_name">The Academic Partner</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
@@ -54,7 +80,7 @@
     <string name="select_school">Select a School</string>
     <string name="dept">Department</string>
     <string name="select_dept">Select your Departments</string>
-    <string name="level">Level:</string>
+    <string name="level">Level</string>
     <string name="select_level">Select a Level</string>
     <string name="select_course">Select Your Courses</string>
     <string name="courses">Courses</string>
@@ -69,6 +95,10 @@
     <string name="view_by_course">View Timetable By Course</string>
     <string name="view_all_timetable">View Overall Timetable</string>
     <string name="timetable_checker">Timetable Checker</string>
+    <string name="course_code">Course Code:</string>
+    <string name="time">Time:</string>
+    <string name="course_title">Course Title:</string>
+    <string name="venue">Venue:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -77,7 +107,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Home</string>
     <string name="title_activity_timetable_by_day">Timetable By Day</string>
 
 </resources>
