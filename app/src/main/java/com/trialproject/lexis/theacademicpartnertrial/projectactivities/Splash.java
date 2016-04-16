@@ -21,7 +21,7 @@ import com.trialproject.lexis.theacademicpartnertrial.projectactivities.HomeActi
 
 public class Splash extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 8000;
+    private static int SPLASH_TIME_OUT = 5000;
     public TextView appName, appMotto;
     public ImageView hat;
     private boolean firstInstallation;
@@ -39,15 +39,6 @@ public class Splash extends AppCompatActivity {
         if(savedInstanceState != null){
             fromSavedInstanceState = true;
         }
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         TextView appName = (TextView) findViewById(R.id.appName);
         TextView appMotto = (TextView) findViewById(R.id.appMotto);

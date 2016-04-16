@@ -56,8 +56,12 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.TimetableByDay"
+            android:name=".projectactivities.TimetableByDay"
             android:label="@string/title_activity_timetable_by_day"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".projectactivities.DayActivity"
+            android:label="@string/title_activity_day"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

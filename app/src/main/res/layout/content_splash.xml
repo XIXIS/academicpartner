@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.Splash"
+    tools:context=".projectactivities.Splash"
     android:background="@color/splashBackgroundColor">
     <!--tools:showIn="@layout/activity_splash"-->
 
@@ -21,18 +21,19 @@
         android:layout_height="wrap_content"
         android:text="@string/appName"
         android:textColor="@color/white"
-        android:textSize="30sp"
+        android:textSize="25sp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:layout_gravity="center" />
 
     <ImageView
         android:id="@+id/hat"
-        android:layout_below="@id/appName"
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_below="@id/appName"
         android:src="@drawable/white_hat"
-        android:layout_marginTop="20dp"/>
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/appMotto"
@@ -40,7 +41,7 @@
         android:layout_height="wrap_content"
         android:text="@string/motto"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:layout_below="@id/hat"
         android:gravity="center"
         android:layout_marginTop="20dp"

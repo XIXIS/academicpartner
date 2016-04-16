@@ -30,6 +30,24 @@
         <item>Friday</item>
     </string-array>
 
+    <string-array name="lecture_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+    </string-array>
+
+    <string name="exam_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string>
+
     <string-array name="list_options">
         <item>View Timetable By Day</item>
         <item>View Timetable By Courses</item>
@@ -109,5 +127,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_home">Home</string>
     <string name="title_activity_timetable_by_day">Timetable By Day</string>
+    <string name="title_activity_day">Days</string>
 
 </resources>

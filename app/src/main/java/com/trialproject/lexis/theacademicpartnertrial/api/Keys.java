@@ -13,7 +13,7 @@ public interface Keys {
         public static final String KEY_WEBSITE="website";
         public static final String KEY_SUCCESS="success";
         public static final String KEY_MESSAGE="message";
-        public static final String KEY_BASE_URL="http://197.255.72.129/academicpartner/";
+        public static final String KEY_BASE_URL="http://197.255.72.138/academicpartner/";
         public static final String KEY_LECTURE_TIMETABLE_URL="lecture_timetable.php";
         public static final String KEY_LOGIN_URL="login.php";
         public static final String KEY_REGISTER_URL="register.php";
@@ -27,6 +27,11 @@ public interface Keys {
         public static final String ID_LEVEL_300="level_300";
         public static final String ID_LEVEL_400="level_400";
         public static final String ID_LEVEL_600="level_600";
+        public static final String KEY_COURSE_CODE="course_id";
+        public static final String KEY_COURSE_TITLE="course_title";
+        public static final String KEY_VENUE="venue_name";
+        public static final String KEY_STARTING_TIME="starting_time_stamp";
+        public static final String KEY_CLOSING_TIME="closing_time_stamp";
 
 
 

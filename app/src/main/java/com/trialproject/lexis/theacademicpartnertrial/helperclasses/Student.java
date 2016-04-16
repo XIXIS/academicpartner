@@ -7,36 +7,50 @@ import java.io.Serializable;
  */
 public class Student implements Serializable{
 
-    public int getPin() {
-        return pin;
+    private String level;
+    private String school;
+    private String college;
+    private String[] departments;
+    private String[] courses;
+
+    public Student(String level, String[] courses, String[] departments, String college, String school) {
+        this.level = level;
+        this.courses = courses;
+        this.departments = departments;
+        this.college = college;
+        this.school = school;
     }
 
-    public void setPin(int pin) {
-        this.pin = pin;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
-    public String[] getDeptartments() {
-        return deptartments;
+    public String getSchool() {
+        return school;
     }
 
-    public void setDeptartments(String[] deptartments) {
-        this.deptartments = deptartments;
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public String[] getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(String[] departments) {
+        this.departments = departments;
     }
 
     public String[] getCourses() {
@@ -45,23 +59,5 @@ public class Student implements Serializable{
 
     public void setCourses(String[] courses) {
         this.courses = courses;
-    }
-
-    private int id;
-    private int pin;
-    private int level;
-    private String[] deptartments;
-    private String[] courses;
-
-    public Student(){
-
-    }
-
-    public Student(String[] courses, String[] deptartments, int level, int pin, int id) {
-        this.courses = courses;
-        this.deptartments = deptartments;
-        this.level = level;
-        this.pin = pin;
-        this.id = id;
     }
 }

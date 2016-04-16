@@ -1,4 +1,4 @@
-package com.trialproject.lexis.theacademicpartnertrial.activities;
+package com.trialproject.lexis.theacademicpartnertrial.projectactivities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -46,8 +46,8 @@ import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
-public class TimetableByDay extends AppCompatActivity implements MaterialTabListener,
-        LectureByDayTab.OnFragmentInteractionListener, ExamByDayTab.OnFragmentInteractionListener {
+public class TimetableByDay extends AppCompatActivity implements MaterialTabListener
+        /*LectureByDayTab.OnFragmentInteractionListener, ExamByDayTab.OnFragmentInteractionListener*/ {
 
     private ViewPager mPager;
     private MaterialTabHost tabHost;
@@ -122,10 +122,10 @@ public class TimetableByDay extends AppCompatActivity implements MaterialTabList
 
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+//    @Override
+//    public void onFragmentInteraction(Uri uri) {
+//
+//    }
 
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -149,8 +149,6 @@ public class TimetableByDay extends AppCompatActivity implements MaterialTabList
                 case 1:
                     fragment=new ExamByDayTab().newInstance("","");
                     break;
-
-
             }
             return fragment;
         }

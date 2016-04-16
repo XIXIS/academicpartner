@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import com.trialproject.lexis.theacademicpartnertrial.helperclasses.Student;
 import com.trialproject.lexis.theacademicpartnertrial.api.CustomArrayRequest;
 import com.trialproject.lexis.theacademicpartnertrial.api.CustomRequest;
 import com.trialproject.lexis.theacademicpartnertrial.api.VolleySingleton;
+import com.trialproject.lexis.theacademicpartnertrial.other.MyApplication;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,16 +46,18 @@ import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.ID_COLLEGE_HUMANITIES;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_BASE_URL;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_REGISTER_FINAL_URL;
-import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_REGISTER_URL;
+
 
 public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
+
+    //Declare variables and views
     TextView appName, colTV, schTV, deptTV, courseTV, finish, lvl;
     Spinner col, sch, level;
     Button dept, course;
     boolean[] mSelection = null;
     private static String[] COLLEGES, SCHOOLS, DEPTS, COURSES;
-    private List<String> selectedDepts=new ArrayList<>();
+    private ArrayList<String> selectedDepts=new ArrayList<>();
     private List<String> selectedCourses=new ArrayList<>();
     private VolleySingleton volleySingleton;
     private RequestQueue requestQueue;
@@ -66,12 +70,15 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
     private static String[] LEVELS;
     private ArrayList<String> levels = new ArrayList<>();
     private Student student;
+    private String selCourses;
+    private String selDepts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_final_sign_up);
+        setContentView(R.layout.activity_final_sign_up);
 
+        //Initialize variables and views
         appName = (TextView) findViewById(R.id.appName);
         colTV = (TextView) findViewById(R.id.collegeTextView);
         schTV = (TextView) findViewById(R.id.schoolTextView);
@@ -85,24 +92,27 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
         dept = (Button) findViewById(R.id.dept);
         course = (Button) findViewById(R.id.courses);
 
+        //Set the font for textviews
         face = Typeface.createFromAsset(getAssets(), "Quicksand_Light.ttf");
-        lvl.setTypeface(face);
-        appName.setTypeface(face);
-        colTV.setTypeface(face);
-        schTV.setTypeface(face);
-        deptTV.setTypeface(face);
-        courseTV.setTypeface(face);
-        finish.setTypeface(face);
+        lvl.setTypeface(face, Typeface.BOLD);
+        appName.setTypeface(face, Typeface.BOLD);
+        colTV.setTypeface(face, Typeface.BOLD);
+        schTV.setTypeface(face, Typeface.BOLD);
+        deptTV.setTypeface(face, Typeface.BOLD);
+        courseTV.setTypeface(face, Typeface.BOLD);
+        finish.setTypeface(face, Typeface.BOLD);
 
+        //Initialize the volleySingleton to make requests
         volleySingleton = VolleySingleton.getInstance();
         requestQueue = volleySingleton.getRequestQueue();
-
-        getCollegeData();
-        getLevelsData();
+        //Make appropriate requests to get necessary data
+        sendLevelsRequest();
+        sendCollegesRequest();
         col.setOnItemSelectedListener(this);
         sch.setOnItemSelectedListener(this);
 
         dept.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FinalSignUp.this);
@@ -115,7 +125,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
                 builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dept.setText("");
+                        selectedDepts.clear();
                         dept.setText(selectedDepts.toString());
                         selectedDeptIDs="";
                         for (int i=0;i<selectedDepts.size();i++){
@@ -124,10 +134,9 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
                                 break;
                             }
                             selectedDeptIDs+=(depts.get(selectedDepts.get(i))+",");
-                            Toast.makeText(getApplicationContext(), selectedDeptIDs, Toast.LENGTH_SHORT).show();
                         }
-                        Log.d("selected depts & codes", selectedDepts.toString() + "\n" + selectedDeptIDs);
-                        getCoursesData();
+
+                        sendCoursesRequest();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -170,10 +179,15 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String [] selectDepts=new String[selectedDepts.size()];
+                String [] selectCourses=new String[selectedCourses.size()];
+
+                student=new Student(level.getSelectedItem().toString(),
+                                    selectedCourses.toArray(selectCourses),
+                                    selectedDepts.toArray(selectDepts) ,
+                                    col.getSelectedItem().toString(), sch.getSelectedItem().toString());
+                MyApplication.getWritableDatabase().overrideStudentSettings(student, true);
                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//                student.setDeptartments(selectedDepts.toArray(new String[selectedDepts.size()]));
-//                student.setCourses(selectedCourses.toArray(new String[selectedCourses.size()]));
-//                intent.putExtra("student", student);
                 startActivity(intent);
                 finish();
             }
@@ -185,70 +199,69 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.college:
-                Toast.makeText(getApplicationContext(), "selected " + parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-                Log.d("selected college", (String) parent.getItemAtPosition(position));
+                //Log.d("selected college", (String) parent.getItemAtPosition(position));
                 switch ((String) parent.getItemAtPosition(position)){
                     case "Basic and Applied Sciences":
                         selectedCollegeID = ID_COLLEGE_BASIC_AND_APPLIED_SCIENCES;
-                        getSchoolsData();
+                        sendSchoolsRequest();
                         break;
                     case "Education":
                         selectedCollegeID = ID_COLLEGE_EDUCATION;
-                        getSchoolsData();
+                        sendSchoolsRequest();
                         break;
                     case "Health Sciences":
                         selectedCollegeID = ID_COLLEGE_HEALTH_SCIENCES;
-                        getSchoolsData();
+                        sendSchoolsRequest();
                         break;
                     case "Humanities":
                         selectedCollegeID = ID_COLLEGE_HUMANITIES;
-                        getSchoolsData();
+                        sendSchoolsRequest();
                         break;
                 }
                 break;
+
             case R.id.school:
-                Log.d("selected school", (String) parent.getItemAtPosition(position));
-                Log.d("school_id", schools.get( parent.getItemAtPosition(position)));
+//                Log.d("selected school", (String) parent.getItemAtPosition(position));
+//                Log.d("school_id", schools.get( parent.getItemAtPosition(position)));
                 switch ((String) parent.getItemAtPosition(position)){
                     case "Agriculture":
                         selectedSchoolID = schools.get("Agriculture");
-                        Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "Biotechnology Research Centre":
                         selectedSchoolID = schools.get("Biotechnology Research Centre");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "Biological Sciences":
                         selectedSchoolID = schools.get("Biological Sciences");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "Engineering Sciences":
                         selectedSchoolID = schools.get("Engineering Sciences");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "Institute of Applied Science and Technology":
                         selectedSchoolID=schools.get("Institute of Applied Science and Technology");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "Institute for Environment and Sanitation Studies":
                         selectedSchoolID=schools.get("Institute for Environment and Sanitation Studies");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "School of Physical and Mathematical Sciences":
                         selectedSchoolID=schools.get("School of Physical and Mathematical Sciences");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                     case "School of Veterinary Medicine":
                         selectedSchoolID=schools.get("School of Veterinary Medicine");
                         Log.d("selectedSchoolID", selectedSchoolID);
-                        getDeptData();
+                        sendDeptsRequest();
                         break;
                 }
                 break;
@@ -261,47 +274,44 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
 
     }
 
-    //retrive levels
-    private void getLevelsData() {
-        sendLevelsJsonRequest();
-    }
-
-    private void sendLevelsJsonRequest() {
+    //retrieve levels
+    private void sendLevelsRequest() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("levelCheck", "true");
+        params.put("request", "levels");
 
-        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_URL), params,
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
+                KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        parseLevelJSONResponse(response);
+                        parseLevelResponse(response);
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(final VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Please check your internet connection\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Please check internet connection\n" +
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         requestQueue.add(jsObjRequest);
     }
-
-    private void parseLevelJSONResponse(JSONArray response) {
+    private void parseLevelResponse(JSONArray response) {
         if (response == null || response.length() == 0) {
-            return;
+            levels.add("No levels available");
+            LEVELS = levels.toArray(new String[levels.size()]);
+            level.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, LEVELS));
         }
         try {
-            Log.d("Json String", response.toString());
             String lev;
             for (int i = 0; i < response.length(); i++) {
                 JSONObject obj = response.getJSONObject(i);
                 lev=obj.getString("level_number");
                 levels.add(lev);
             }
-            Log.d("Levels String", levels.toString());
 
             LEVELS = levels.toArray(new String[levels.size()]);
             Log.d("Levels", LEVELS.toString());
@@ -310,58 +320,50 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
             level.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, LEVELS));
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-
         }
     }
 
 
     //Retrieve Colleges
-    private void getCollegeData() {
-        sendCollegeJsonRequest();
-    }
-
-    private void sendCollegeJsonRequest() {
+    private void sendCollegesRequest() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("collegeCheck", "true");
-        params.put("schoolCheck", "false");
+        params.put("request", "colleges");
 
-        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
+                KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        parseCollegeJSONResponse(response);
+                        parseCollegeResponse(response);
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(final VolleyError error) {
-                Log.d("College Error", error.getMessage());
-                Toast.makeText(getApplicationContext(), "Unable to retrieve College Details\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getApplicationContext(), "Unable to retrieve College Details\n" +
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         requestQueue.add(jsObjRequest);
     }
-
-    private void parseCollegeJSONResponse(JSONArray response) {
-        Toast.makeText(getApplicationContext(), "Entered parsecollegeJson", Toast.LENGTH_SHORT).show();
+    private void parseCollegeResponse(JSONArray response) {
         if (response == null || response.length() == 0) {
-            return;
+            colleges.add("No colleges available");
+            COLLEGES = colleges.toArray(new String[colleges.size()]);
+            col.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, COLLEGES));
         }
         try {
-            Log.d("Json String", response.toString());
             String coll;
             for (int i = 0; i < response.length(); i++) {
                 JSONObject obj = response.getJSONObject(i);
                 coll = obj.getString("college_name");
                 colleges.add(coll);
             }
-            Log.d("Colleges String", colleges.toString());
-
             COLLEGES = colleges.toArray(new String[colleges.size()]);
-            Log.d("Colleges", COLLEGES.toString());
 
             // Setting a Custom Adapter to the Spinner
             col.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, COLLEGES));
@@ -374,104 +376,87 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
 
 
     //Retrieve Schools
-    private void getSchoolsData() {
-        sendSchoolsJsonRequest();
-    }
-
-    private void sendSchoolsJsonRequest() {
+    private void sendSchoolsRequest() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("schoolCheck", "true");
-        params.put("collegeCheck", "false");
-        params.put("collegeID", selectedCollegeID);
+        params.put("request", "schools");
+        params.put("college_id", selectedCollegeID);
 
-        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
+                KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        parseSchoolsJSONResponse(response);
+                        parseSchoolsResponse(response);
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(final VolleyError error) {
-                Log.d("Retrieve School Error", error.getMessage());
-                Toast.makeText(getApplicationContext(), "Unable to retrieve School Details\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getApplicationContext(), "Unable to retrieve School Details\n" +
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         requestQueue.add(jsObjRequest);
     }
-
-    private void parseSchoolsJSONResponse(JSONArray response) {
+    private void parseSchoolsResponse(JSONArray response) {
         if (response == null || response.length() == 0) {
-            return;
+            SCHOOLS[0] = "No schools available";
+            sch.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, SCHOOLS));
         }
         try {
-            Log.d("Json String", response.toString());
             schools.clear();
             for (int i = 0; i < response.length(); i++) {
                 JSONObject obj = response.getJSONObject(i);
                 schools.put(obj.getString("school_name"), obj.getString("school_id"));
             }
-            Log.d("Schools String", schools.toString());
 
             SCHOOLS = schools.keySet().toArray(new String[schools.keySet().size()]);
-            Log.d("Schools", SCHOOLS.toString());
-
             sch.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, SCHOOLS));
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-
         }
     }
 
 
     //Retrieve Depts
-    private void getDeptData(){
-        sendDeptJsonRequest();
-    }
-
-    private void sendDeptJsonRequest(){
+    private void sendDeptsRequest(){
         Map<String, String> params = new HashMap<String, String>();
-        params.put("schoolCheck", "false");
-        params.put("collegeCheck", "false");
-        params.put("deptCheck", "true");
-        params.put("collegeID", selectedCollegeID);
+        params.put("request", "depts");
         params.put("schoolID", selectedSchoolID);
 
-        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
+                KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        parseDeptJsonRequest(response);
+                        parseDeptRequest(response);
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(final VolleyError error) {
-                Log.d("Retrieve Dept Error", error.getMessage());
-                Toast.makeText(getApplicationContext(), "Unable to retrieve Department Details\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Unable to retrieve Department Details\n" +
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         requestQueue.add(jsObjRequest);
     }
-
-    private void parseDeptJsonRequest(JSONArray response){
+    private void parseDeptRequest(JSONArray response){
         if (response == null || response.length() == 0) {
-            return;
+            DEPTS[0] = "No departments available";
         }
         try {
-            Log.d("Json String", response.toString());
             depts.clear();
             for (int i = 0; i < response.length(); i++) {
                 JSONObject obj = response.getJSONObject(i);
                 depts.put(obj.getString("dept_name"), obj.getString("dept_id"));
             }
-            Log.d("Depts String", depts.toString());
 
             DEPTS = depts.keySet().toArray(new String[depts.keySet().size()]);
         } catch (JSONException e) {
@@ -482,22 +467,14 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
 
 
     //retrieve courses
-    private void getCoursesData(){
-        sendCoursesJsonRequest();
-    }
-
-    private void sendCoursesJsonRequest(){
+    private void sendCoursesRequest(){
         Map<String, String> params = new HashMap<String, String>();
-        params.put("schoolCheck", "false");
-        params.put("collegeCheck", "false");
-        params.put("deptCheck", "false");
-        params.put("courseCheck", "true");
-        params.put("deptIDs", selectedDeptIDs);
+        params.put("request", "courses");
+        params.put("dept_ids", selectedDeptIDs);
         params.put("level", level.getSelectedItem().toString());
 
-
-
-        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST,
+                KEY_BASE_URL.concat(KEY_REGISTER_FINAL_URL), params,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -509,19 +486,18 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onErrorResponse(final VolleyError error) {
                 Log.d("Retrieve Courses Error", error.getMessage());
-                Toast.makeText(getApplicationContext(), "Unable to retrieve Courses Details\n" + error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Unable to retrieve Courses Details\n" +
+                        error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
         requestQueue.add(jsObjRequest);
     }
-
     private void parseCoursesJsonRequest(JSONObject response){
         if (response == null || response.length() == 0) {
-            return;
+            COURSES[0] = "No courses available";
         }
         try {
-            Log.d("Json String", response.toString());
             courses.clear();
             int numQueries=selectedDepts.size();
             for (int i = 0; i < numQueries; i++) {
@@ -531,10 +507,7 @@ public class FinalSignUp extends AppCompatActivity implements AdapterView.OnItem
                     courses.put(obj.getString("course_title"), obj.getString("course_id"));
                 }
             }
-            Log.d("Courses String", courses.toString());
-
             COURSES = courses.keySet().toArray(new String[courses.size()]);
-            Log.d("Courses", courses.toString());
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }

@@ -55,6 +55,7 @@
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/one"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/view_by_day"
@@ -63,6 +64,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -86,6 +88,7 @@
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/three"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/view_by_course"
@@ -94,6 +97,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/four"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -116,6 +120,7 @@
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/five"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/view_all_timetable"
@@ -147,6 +152,7 @@
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/six"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/find_venue"
@@ -155,6 +161,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/seven"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

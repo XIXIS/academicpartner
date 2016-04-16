@@ -3,29 +3,21 @@ package com.trialproject.lexis.theacademicpartnertrial.projectactivities;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.renderscript.Type;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.trialproject.lexis.theacademicpartnertrial.R;
 import com.trialproject.lexis.theacademicpartnertrial.activities.ActivityUsingTabLibrary;
-import com.trialproject.lexis.theacademicpartnertrial.activities.TimetableByDay;
-import com.trialproject.lexis.theacademicpartnertrial.helperclasses.HomeCustomListAdapter;
-
-import java.lang.reflect.Type;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView checker;
+    private TextView checker, subText, one, two, three, four, five, six, seven;
     private LinearLayout timetableByDay, timetableByCourse,
             allTimetable, findVenue;
 
@@ -47,15 +39,34 @@ public class HomeActivity extends AppCompatActivity {
 //        });\
 
         checker=(TextView) findViewById(R.id.besideTimetableImage);
+        subText=(TextView) findViewById(R.id.subText);
+        one=(TextView) findViewById(R.id.one);
+        two=(TextView) findViewById(R.id.two);
+        three=(TextView) findViewById(R.id.three);
+        four=(TextView) findViewById(R.id.four);
+        five=(TextView) findViewById(R.id.five);
+        six=(TextView) findViewById(R.id.six);
+        seven=(TextView) findViewById(R.id.seven);
         timetableByDay=(LinearLayout) findViewById(R.id.timetableByDay);
         timetableByCourse=(LinearLayout) findViewById(R.id.timetableByCourse);
         allTimetable=(LinearLayout) findViewById(R.id.AllTmetable);
         findVenue=(LinearLayout) findViewById(R.id.findVenue);
 
+        Typeface face = Typeface.createFromAsset(getAssets(), "Quicksand_Light.ttf");
+        checker.setTypeface(face, Typeface.BOLD);
+        subText.setTypeface(face);
+        one.setTypeface(face, Typeface.BOLD);
+        two.setTypeface(face);
+        three.setTypeface(face, Typeface.BOLD);
+        four.setTypeface(face);
+        five.setTypeface(face, Typeface.BOLD);
+        six.setTypeface(face, Typeface.BOLD);
+        seven.setTypeface(face);
+
         timetableByDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, TimetableByDay.class));
+                startActivity(new Intent(HomeActivity.this, DayActivity.class));
             }
         });
 

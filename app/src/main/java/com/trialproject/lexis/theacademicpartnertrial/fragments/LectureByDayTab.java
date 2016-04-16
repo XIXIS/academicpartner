@@ -26,13 +26,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_BASE_URL;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_CLOSING_TIME;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_COURSE_CODE;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_COURSE_TITLE;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_LECTURE_TIMETABLE_URL;
 import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_REGISTER_URL;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_STARTING_TIME;
+import static com.trialproject.lexis.theacademicpartnertrial.api.Keys.JsonItems.KEY_VENUE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,6 +68,11 @@ public class LectureByDayTab extends Fragment {
     List<String> listDataHeader;
     HashMap<String, List<LectureTimetable>> listDataChild;
     String[] days;
+    ArrayList<LectureTimetable> monLecTimetable=new ArrayList<>();
+    ArrayList<LectureTimetable> tueLecTimetable=new ArrayList<>();
+    ArrayList<LectureTimetable> wedLecTimetable=new ArrayList<>();
+    ArrayList<LectureTimetable> thurLecTimetable=new ArrayList<>();
+    ArrayList<LectureTimetable> friLecTimetable=new ArrayList<>();
 
     public LectureByDayTab() {
         // Required empty public constructor
@@ -102,13 +113,15 @@ public class LectureByDayTab extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_lecture_by_day_tab, container, false);
 
         volleySingleton = VolleySingleton.getInstance();
-        requestQueue = volleySingleton.getRequestQueue();
+        requestQueue=volleySingleton.getRequestQueue();
+
+        retrieveTimetable("Monday");
+        retrieveTimetable("Tuesday");
+        retrieveTimetable("Wednesday");
+        retrieveTimetable("Thursday");
+        retrieveTimetable("Friday");
 
         expListView = (ExpandableListView) layout.findViewById(R.id.day_list);
-        // preparing list data
-//        getLectureTimebleData();
-        prepareListData();
-
 
         listAdapter = new CustomExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
         expListView.setAdapter(listAdapter);
@@ -179,221 +192,130 @@ public class LectureByDayTab extends Fragment {
         return layout;
     }
 
-//     TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
+    //query to obtain all timetable data
+    private void retrieveTimetable(String day) {
+        sendJsonRequest(day);
+    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
-//
-//
-//    private void retrievePoliciesExpiringRecords() {
-//        sendPoliciesJsonRequest();
-//    }
-//
-//    private void sendPoliciesJsonRequest() {
-//
-//        Map<String, String> params = new HashMap<>();
-//        params.put("what_to_retrieve", "policies_expiring_month");
-//
-//
-//        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST, dashBoardURL, params, new Response.Listener<JSONArray>() {
-//
-//            @Override
-//            public void onResponse(JSONArray response) {
-//                parsePolicyJSONResponse(response);
-//            }
-//        }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(final VolleyError error) {
-//
-//                Toast.makeText(getApplicationContext(), "Login failed Try Again\n" + error.getMessage(), Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//
-//        requestQueue.add(jsObjRequest);
-//    }
-//
-//    private void parsePolicyJSONResponse(JSONArray response) {
-//        if (response == null || response.length() == 0) {
-//            monthExpiringButton.setText("0\n"+getString(R.string.policies_today));
-//            return;
-//        } else {
-//            monthExpiringButton.setText(response.length()+"\n"+getString(R.string.policies_today));
-//
-//        }
-//    }
+    private void sendJsonRequest(final String day) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("what_to_retrieve", "lecture_timetable_by_day");
+        params.put("dept", "CSCD");
+        params.put("day", day);
+        params.put("level", "400");
+
+
+        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
+                KEY_BASE_URL+KEY_LECTURE_TIMETABLE_URL, params, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+                parseJSONResponse(response, day);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(final VolleyError error) {
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        requestQueue.add(jsObjRequest);
+    }
+
+    private void parseJSONResponse(JSONArray response, String day) {
+        if (response == null || response.length() == 0) {
+            Log.d(day, String.valueOf(response.length()));
+            switch (day) {
+                case "Monday":
+                    monLecTimetable.add(new LectureTimetable("", "", "", "" ));
+                    break;
+                case "Tuesday":
+                    tueLecTimetable.add(new LectureTimetable("", "", "", "" ));
+                    break;
+                case "Wednesday":
+                    wedLecTimetable.add(new LectureTimetable("", "", "", "" ));
+                    break;
+                case "Thursady":
+                    thurLecTimetable.add(new LectureTimetable("", "", "", "" ));
+                    break;
+                case "Friday":
+                    friLecTimetable.add(new LectureTimetable("Not Available", "Not Available", "Not Available", "Not Available" ));
+                    break;
+            }
+        } else {
+            try {
+                Log.d("Json String", response.toString());
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject obj = response.getJSONObject(i);
+                    String courseCode = obj.getString(KEY_COURSE_CODE);
+                    String courseTitle = obj.getString(KEY_COURSE_TITLE);
+                    String startingTime = obj.getString(KEY_STARTING_TIME);
+                    String closingTime = obj.getString(KEY_CLOSING_TIME);
+                    String venue = obj.getString(KEY_VENUE);
+
+                    LectureTimetable lectTimetableEntry = new LectureTimetable(courseCode, courseTitle, startingTime + " - " + closingTime, venue);
+                    switch (day){
+                        case "Monday":
+                            monLecTimetable.add(lectTimetableEntry);
+                            break;
+                        case "Tuesday":
+                            tueLecTimetable.add(lectTimetableEntry);
+                            break;
+                        case "Wednesday":
+                            wedLecTimetable.add(lectTimetableEntry);
+                            break;
+                        case "Thursady":
+                            thurLecTimetable.add(lectTimetableEntry);
+                            break;
+                        case "Friday":
+                            friLecTimetable.add(lectTimetableEntry);
+                            break;
+
+                    }
+
+                    if(day.equalsIgnoreCase("Friday"))
+                        prepareListData();
+
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
 
 
     private void prepareListData() {
         days = getResources().getStringArray(R.array.days);
         listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         // Adding group data
         for (String menuItem : days) {
             listDataHeader.add(menuItem);
         }
+        Log.d("days", listDataHeader.size()+"");
 
-        // Adding child data
-        List<LectureTimetable> monChildren = new ArrayList<>();
-        monChildren.add(new LectureTimetable("CSCD422", "Human Computer Interraction", "1:30pm - 2:25pm", "Computer Science Library"));
-        monChildren.add(new LectureTimetable("CSCD416", "System Programming", "2:30pm - 3:25pm", "N Block Room 2"));
-        monChildren.add(new LectureTimetable("CSCD434", "Mobile Computing", "5:30pm - 6:25pm", "MATH Room 19"));
+        ArrayList[] allDaysTimetableEntries={monLecTimetable, tueLecTimetable,
+                wedLecTimetable, thurLecTimetable, friLecTimetable};
 
-        List<LectureTimetable> tuesChildren = new ArrayList<>();
-        tuesChildren.add(new LectureTimetable("CSCD418", "System Security", "7:30am - 9:25am", "Jones Quartey Building Room 14"));
-        tuesChildren.add(new LectureTimetable("CSCD424", "Management Principles in Computing", "9:30am - 11:25am", "Jones Quartey Building Room 21"));
+        for (ArrayList s: allDaysTimetableEntries){
+            if (s.size() == 0 ) {
+                return;
+            } else{
+                String entry=listDataHeader.get(Arrays.asList(allDaysTimetableEntries).indexOf(s));
+                listDataChild.put(entry,s);
+                Log.d("info", entry + " - " +  s.size()  +" children");
+            }
+        }
 
-        List<LectureTimetable> wedChildren = new ArrayList<>();
-        wedChildren.add(new LectureTimetable("CSCD416", "System Programming", "7:30am - 9:25am", "N Block Room 3"));
-        wedChildren.add(new LectureTimetable("CSCD422", "Human Computer Interraction", "9:30pm - 11:25pm", "Jones Quartey Building Room 09"));
-        wedChildren.add(new LectureTimetable("CSCD424", "Management Principles in Computing", "15:30pm - 16:25pm", "Jones Quartey Building Room 09"));
-
-        List<LectureTimetable> thurChildren = new ArrayList<>();
-        thurChildren.add(new LectureTimetable("CSCD434", "Mobile Computing", "11:30pm - 13:25pm", "Jones Quartey Building Room 14"));
-        thurChildren.add(new LectureTimetable("CSCD418", "System Security", "16:30pm - 17:25pm", "Jones Quartey Building Room 23"));
-
-
-        listDataChild.put(listDataHeader.get(0), monChildren); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), tuesChildren);
-        listDataChild.put(listDataHeader.get(2), wedChildren);
-        listDataChild.put(listDataHeader.get(3), thurChildren);
     }
 
-//    private void getLectureTimebleData() {
-//        sendLectureTimetableJsonRequest();
-//    }
-//
-//    private void sendLectureTimetableJsonRequest() {
-//
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("what_to_retrieve", "lecture_timetable_by_day");
-//        params.put("dept", "CSCD");
-//        params.put("level", "400");
-//
-//        CustomArrayRequest jsObjRequest = new CustomArrayRequest(Request.Method.POST,
-//                KEY_BASE_URL.concat(KEY_LECTURE_TIMETABLE_URL), params, new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        parseLectureTimetableJSONResponse(response);
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(final VolleyError error) {
-//                Toast.makeText(getActivity(), "Please check your internet connection\n" +
-//                                error.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//        requestQueue.add(jsObjRequest);
-//    }
-//
-//    private void parseLectureTimetableJSONResponse(JSONArray response) {
-////        if (response == null || response.length() == 0) {
-////            return;
-////        }
-////        try {
-////            Log.d("Json String", response.toString());
-////            String lev;
-////            for (int i = 0; i < response.length(); i++) {
-////                JSONObject obj = response.getJSONObject(i);
-////                lev=obj.getString("level_number");
-////                levels.add(lev);
-////            }
-////            Log.d("Levels String", levels.toString());
-////
-////            LEVELS = levels.toArray(new String[levels.size()]);
-////            Log.d("Levels", LEVELS.toString());
-////
-////            // Setting a Custom Adapter to the Spinner
-////            level.setAdapter(new MyAdapter(FinalSignUp.this, R.layout.custom, LEVELS));
-////        } catch (JSONException e) {
-////            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-////
-////        }
-//    }
-
-//    private void prepareChildListData() {
-//        days = getResources().getStringArray(R.array.days);
-//        listDataChild = new HashMap<>();
-//
-//        // Adding child data
-//        for (String menuItem : days) {
-//            listDataHeader.add(menuItem);
-//        }
-//
-//
-//        // Adding child data
-//        List<LectureTimetable> clientRecordChildren = new ArrayList<>();
-//        clientRecordChildren.add("View Records");
-//        clientRecordChildren.add("Add New Record");
-//        clientRecordChildren.add("Clients");
-//
-//        List<LectureTimetable> policiesChildren = new ArrayList<>();
-//        policiesChildren.add("Expiring this month");
-//        policiesChildren.add("Expiring today");
-//        policiesChildren.add("All Policies");
-//
-//        List<LectureTimetable> filesChildren = new ArrayList<>();
-//        filesChildren.add("View Files");
-//        filesChildren.add("Upload Files");
-//
-//        List<LectureTimetable> statChildren = new ArrayList<>();
-//        statChildren.add("Withholding tax paid per policy");
-//        statChildren.add("Withholding tax paid to each company");
-//        statChildren.add("Unpaid Commissions");
-//        statChildren.add("Recently Updated Policies");
-//        statChildren.add("Recently Updated Client Records");
-//        statChildren.add("Recently Updated Company Records");
-//        statChildren.add("Recently Updated Lead Records");
-//
-//        List<LectureTimetable> claims = new ArrayList<String>();
-//        claims.add("Number of Claims");
-//        claims.add("Number of New Claims");
-//        claims.add("Number of Claims in Process");
-//        claims.add("Add Claims");
-//
-//        listDataChild.put(listDataHeader.get(0), clientRecordChildren); // Header, Child data
-//        listDataChild.put(listDataHeader.get(1), policiesChildren);
-//        listDataChild.put(listDataHeader.get(2), filesChildren);
-//        listDataChild.put(listDataHeader.get(3), statChildren);
-//        listDataChild.put(listDataHeader.get(4), claims);
-//    }
 
 
 
